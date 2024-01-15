@@ -1,0 +1,68 @@
+spring:
+  web:
+    resources:
+      static-locations: classpath:none/
+
+  datasource:
+    url: jdbc:mysql://jiacai.cluster-ro-ch4gzirclaxq.ap-southeast-1.rds.amazonaws.com:3306/jiacai
+    username: admin
+    password: Lottery123!
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    database: 0
+    password: ''
+    timeout: 5000
+  rabbitmq:
+    host: '127.0.0.1'
+    port: 5672
+    username: 'rabbitmq_xingyun'
+    password: 'rabbitmq_xingyun456'
+    virtual-host: /lottery
+    listener:
+      direct:
+        acknowledge-mode: manual
+      simple:
+        acknowledge-mode: manual
+    cache:
+      connection:
+        mode: connection
+        size: 32
+      channel:
+        size: 8
+        checkout-timeout: 15000
+    requested-channel-max: 16
+
+transfer:
+  douma:
+    notify_url: https://cdnadmin.ckckzz.com/transfer/callback/douma
+  kdou:
+    notify_url: https://cdnadmin.ckckzz.com/transfer/callback/kdou
+  yunpay:
+    notify_url: https://cdnadmin.ckckzz.com/transfer/callback/yunpay
+
+project:
+  self_reward: false
+  admin:
+    ga_check: true
+  job:
+    production: true
+
+logging:
+  level:
+    springfox: error
+    com.xingyun.easypaycommon.dao.mapper: error
+    org.springframework.context.annotation.ClassPathBeanDefinitionScanner: info
+    org.redisson.connection: error
+  config: /work/product/config/logback-admin.xml
+
+
+
+
+
+
+
+
+
+

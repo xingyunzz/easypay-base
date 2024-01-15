@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xingyun.easypaycommon.dao.mapper.BotLotteryMapper">
+
+    <select id="insufficientPointsBot" resultType="com.xingyun.easypaycommon.dao.domain.entity.BotLottery">
+        select *
+        from bot_lottery
+        where points &lt; min_amount;
+    </select>
+
+</mapper>

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xingyun.easypaycommon.dao.mapper.LotteryIssueMapper">
+
+    <select id="listIssueNotOpen" resultType="com.xingyun.easypaycommon.dao.dto.LotteryIssueDto">
+        select a.category_id,
+               a.category_name,
+               a.issue,
+               a.first,
+               a.second,
+               a.third,
+               a.result,
+               a.actual_draw_time,
+               a.expect_draw_time,
+               ifnull(b.items, '')        as items,
+               ifnull(b.total_points, 0)  as total_points,
+               ifnull(b.obtain_points, 0) as obtain_points
+        from lottery_issue a
+                 left join (select category_id,
+                                   issue,
+                                   GROUP_CONCAT(items)           as items,
+                                   IFNULL(SUM(total_points), 0)  as total_points,
+                                   IFNULL(SUM(obtain_points), 0) as obtain_points
+                            from lottery_order
+                            where member_id = #{memberId}
+                              and lottery_id = #{lotteryId}
+                              and create_time between #{startTime} and #{endTime}
+                              and status != 2
+                            GROUP BY category_id, issue) b
+                           on a.category_id = b.category_id and a.issue = b.issue
+        where a.category_id = #{categoryId}
+        and a.result = -1
+        order by a.issue desc
+        limit 50;
+    </select>
+
+    <select id="listIssueOpened" resultType="com.xingyun.easypaycommon.dao.dto.LotteryIssueDto">
+        select a.category_id,
+               a.category_name,
+               a.issue,
+               a.first,
+               a.second,
+               a.third,
+               a.result,
+               a.actual_draw_time,
+               a.expect_draw_time,
+               a.result_items,
+               ifnull(b.items, '')        as items,
+               ifnull(b.total_points, 0)  as total_points,
+               ifnull(b.obtain_points, 0) as obtain_points
+        from lottery_issue a
+                 left join (select category_id,
+                                   issue,
+                                   GROUP_CONCAT(items)           as items,
+                                   IFNULL(SUM(total_points), 0)  as total_points,
+                                   IFNULL(SUM(obtain_points), 0) as obtain_points
+                            from lottery_order
+                            where member_id = #{memberId}
+                              and lottery_id = #{lotteryId}
+                              and create_time between #{startTime} and #{endTime}
+                              and status != 2
+                            GROUP BY category_id, issue) b
+                           on a.category_id = b.category_id and a.issue = b.issue
+        where a.category_id = #{categoryId}
+        and a.result >= 0
+        order by a.issue desc
+        limit 50;
+    </select>
+
+    <select id="listIssue" resultType="com.xingyun.easypaycommon.dao.dto.LotteryIssueDto">
+        select a.category_id,
+               a.category_name,
+               a.issue,
+               a.first,
+               a.second,
+               a.third,
+               a.result,
+               a.actual_draw_time,
+               a.expect_draw_time,
+               ifnull(b.items, '')        as items,
+               ifnull(b.total_points, 0)  as total_points,
+               ifnull(b.obtain_points, 0) as obtain_points
+        from lottery_issue a
+                 left join (select category_id,
+                                   issue,
+                                   GROUP_CONCAT(items)           as items,
+                                   IFNULL(SUM(total_points), 0)  as total_points,
+                                   IFNULL(SUM(obtain_points), 0) as obtain_points
+                            from lottery_order
+                            where member_id = #{memberId}
+                              and lottery_id = #{lotteryId}
+                              and status != 2
+                            GROUP BY category_id, issue) b
+                           on a.category_id = b.category_id and a.issue = b.issue
+        where a.category_id = #{categoryId}
+        order by a.issue desc
+        limit 50;
+    </select>
+</mapper>

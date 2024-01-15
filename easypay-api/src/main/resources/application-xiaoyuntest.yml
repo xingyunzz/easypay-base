@@ -1,0 +1,71 @@
+spring:
+  web:
+    resources:
+      static-locations: classpath:none/
+
+  datasource:
+    url: jdbc:mysql://database-1.ch4gzirclaxq.ap-southeast-1.rds.amazonaws.com:3306/lottery-test
+    username: lottery_test
+    password: Lottery_test123!
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  redis:
+    host: 127.0.0.1
+    port: 16379
+    database: 0
+    password: 'KyewzOqiX58T2H5GbYWk15AD65CMpGlDMlqu'
+    timeout: 5000
+  rabbitmq:
+    host: '127.0.0.1'
+    port: 5672
+    username: 'rabbitmq_xingyun'
+    password: 'rabbitmq_xingyun456'
+    virtual-host: /lottery-test
+    listener:
+      direct:
+        acknowledge-mode: manual
+      simple:
+        acknowledge-mode: manual
+    cache:
+      connection:
+        mode: connection
+        size: 32
+      channel:
+        size: 8
+        checkout-timeout: 15000
+    requested-channel-max: 16
+
+logging:
+  level:
+    springfox: error
+    com.xingyun.easypaycommon.dao.mapper: info
+    org.springframework.context.annotation.ClassPathBeanDefinitionScanner: info
+    org.redisson.connection: error
+  config: /work/product/config/logback-api.xml
+
+project:
+  self_reward: true
+  job:
+    production: false
+
+pay:
+  shark:
+    notify_url: https://testapi.xiaoyun28.com/pay/callback/shark
+  douma:
+    notify_url: https://testapi.xiaoyun28.com/pay/callback/douma
+  yunyin:
+    notify_url: https://testapi.xiaoyun28.com/pay/callback/yunyin
+  kdou:
+    notify_url: https://testapi.xiaoyun28.com/pay/callback/kdou
+  jinqiantong:
+    notify_url: https://testapi.xiaoyun28.com/pay/callback/jinqiantong
+  yunpay:
+    notify_url: https://testapi.xiaoyun28.com/pay/callback/yunpay
+
+
+
+
+
+
+
+
+

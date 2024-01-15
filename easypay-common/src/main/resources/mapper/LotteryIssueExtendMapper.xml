@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xingyun.easypaycommon.dao.mapper.LotteryIssueExtendMapper">
+
+    <select id="listIssue" resultType="com.xingyun.easypaycommon.dao.dto.LotteryIssueDto">
+        select a.category_id,
+               a.category_name,
+               a.issue,
+               a.first,
+               a.second,
+               a.third,
+               a.result,
+               a.actual_draw_time,
+               a.expect_draw_time,
+               b.items,
+               b.total_points,
+               b.obtain_points
+        from lottery_issue a
+                 left join (select items, total_points, obtain_points, category_id, issue
+                            from lottery_order
+                            where member_id = #{memberId}
+                              and lottery_id = #{lotteryId}) b
+                           on a.category_id = b.category_id and a.issue = b.issue
+        where a.category_id = #{categoryId}
+        order by a.issue desc;
+    </select>
+
+    <select id="leaderboard" resultType="com.xingyun.easypaycommon.dao.dto.LeaderboardDto">
+
+        select member_id, nickname, phone, (sum(obtain_points) - sum(total_points)) as points
+        from lottery_order
+        where create_time between #{startTime} and #{endTime}
+        group by member_id, nickname, phone
+        <if test="type == true">
+            order by win desc;
+        </if>
+        <if test="type == false">
+            order by win asc;
+        </if>
+    </select>
+</mapper>

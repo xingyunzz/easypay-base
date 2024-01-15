@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xingyun.easypaycommon.dao.mapper.LotteryOrderMapper">
+
+    <select id="leaderboard" resultType="com.xingyun.easypaycommon.dao.dto.LeaderboardDto">
+
+    select o.member_id,m.nickname, o.user_code, o.phone, (sum(o.obtain_points) - sum(o.total_points)) as points
+        from lottery_order o
+        LEFT JOIN member m on o.member_id = m.id
+        where status = 1 and  o.create_time between from_unixtime(#{startTime})  and from_unixtime(#{endTime})
+
+        group by o.member_id,o.user_code, o.phone, m.nickname
+
+        <if test="type == true">
+            having points >= 0
+        </if>
+
+        <if test="type == false">
+            having points <![CDATA[ < ]]> 0
+        </if>
+
+        <if test="type == true">
+            order by points desc;
+        </if>
+        <if test="type == false">
+            order by points asc;
+        </if>
+    </select>
+</mapper>

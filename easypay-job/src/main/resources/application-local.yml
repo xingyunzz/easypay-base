@@ -1,0 +1,62 @@
+spring:
+  web:
+    resources:
+      static-locations: classpath:none/
+
+  datasource:
+    url: jdbc:mysql://database-1.ch4gzirclaxq.ap-southeast-1.rds.amazonaws.com:3306/lottery-local
+    username: lottery_test
+    password: Lottery_test123!
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  redis:
+    host: 18.139.202.32
+    port: 16379
+    database: 1
+    password: 'KyewzOqiX58T2H5GbYWk15AD65CMpGlDMlqu'
+    timeout: 10s
+    lettuce:
+      pool:
+        max-active: 10
+        max-wait: 10s
+        max-idle: 5
+        min-idle: 1
+  rabbitmq:
+    host: '18.139.202.32'
+    port: 5672
+    username: 'rabbitmq_xingyun'
+    password: 'rabbitmq_xingyun456'
+    virtual-host: /lottery-local
+    listener:
+      direct:
+        acknowledge-mode: manual
+      simple:
+        acknowledge-mode: manual
+    cache:
+      connection:
+        mode: connection
+        size: 32
+      channel:
+        size: 8
+        checkout-timeout: 15000
+    requested-channel-max: 16
+
+project:
+  self_reward: false
+  job:
+    production: false
+logging:
+  level:
+    springfox: error
+    com.xingyun.easypaycommon.dao.mapper: error
+    org.springframework.context.annotation.ClassPathBeanDefinitionScanner: info
+    org.redisson.connection: error
+  config: classpath:logback-spring-local.xml
+
+
+
+
+
+
+
+
+

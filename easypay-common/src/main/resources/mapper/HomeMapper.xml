@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xingyun.easypaycommon.dao.mapper.HomeMapper">
+
+    <select id="statistic" resultType="com.xingyun.easypaycommon.dao.dto.Statistic1Dto">
+
+        select (select ifnull(sum(points), 0)
+                from member_points_record
+                where type = 1
+                  and create_time between #{startTime} and #{endTime})                                           as charge,
+
+               (select ifnull(sum(points), 0)
+                from member_points_record
+                where type = 3
+                 and  create_time between #{startTime} and #{endTime})                                           as self_rewards,
+
+               (select ifnull(sum(points), 0)
+                from member_points_record
+                where type = 2
+                  and create_time between #{startTime} and #{endTime})                                           as withdraw,
+
+
+               (select ifnull(sum(points), 0)
+                from member_points_record
+                where  type = 4
+                  and  create_time between #{startTime} and #{endTime})                                           as invite_rewards,
+
+               (select ifnull(sum(points), 0)
+                from member )                                           as user_points,
+
+               (select ifnull(sum(points), 0)
+                from member_points_record
+                where  type = 5
+                  and  create_time between #{startTime} and #{endTime})                as flow,
+
+               (select ifnull(sum(points), 0)
+                from member_points_record
+                where  type = 6
+                  and  create_time between #{startTime} and #{endTime})              as win,
+
+                (select count(*) FROM lottery_order
+                WHERE `status` = 1 and create_time BETWEEN #{startTime} AND #{endTime} )                                           as lottery_count,
+
+
+            (select count(*) FROM recharge_order
+    WHERE `order_status` in (4,7) and create_time BETWEEN #{startTime} AND #{endTime} )                                           as depositCount,
+
+               ( select count(*) from (select count(*) FROM recharge_order
+                WHERE `order_status` in (4,7) and create_time BETWEEN #{startTime} AND #{endTime} group by member_id) as bb  )                 as depositMemberNum,
+
+               (select count(*) FROM withdraw
+                WHERE `status` = 1 and create_time BETWEEN #{startTime} AND #{endTime})                 as withdrawCount,
+
+               ( select count(*) from  (select count(*) FROM withdraw
+                WHERE `status` = 1 and create_time BETWEEN #{startTime} AND #{endTime} group by member_id) as aa )                 as withdrawMemberNum,
+
+               (select ifnull(sum(points), 0)
+                from member_points_record
+                where  type = 18
+                  and  create_time between #{startTime} and #{endTime})              as couponRecharge,
+
+               (select ifnull(sum(points), 0)
+                from member_points_record
+                where  type = 19
+                  and  create_time between #{startTime} and #{endTime})              as couponAgentRecharge
+        ;
+    </select>
+
+
+
+   <!-- @ApiModelProperty("充值")
+    private BigDecimal charge;
+    @ApiModelProperty("提现")
+    private BigDecimal withdraw;
+    @ApiModelProperty("输赢")
+    private BigDecimal win;
+    @ApiModelProperty("笔数")
+    private Long lotteryCount;
+    @ApiModelProperty("流水")
+    private BigDecimal lotteryPoints;
+    @ApiModelProperty("用户积分")
+    private BigDecimal userPoints;-->
+
+    <select id="statisticWithMemberId1" resultType="com.xingyun.easypaycommon.dao.dto.Statistic1Dto">
+
+        select (select ifnull(sum(points), 0)
+                from member_points_record
+                where type = 1
+                  and member_id = #{memberId}
+                  and unix_timestamp(create_time) between #{startTime} and #{endTime})                                           as charge,
+
+               (select ifnull(sum(points), 0)
+                from member_points_record
+                where type = 3
+                  and member_id = #{memberId}
+                  and   unix_timestamp(create_time) between #{startTime} and #{endTime})                                           as self_rewards,
+
+               (select ifnull(sum(points), 0)
+                from withdraw
+                where `status` = 1
+                  and member_id = #{memberId}
+                  and unix_timestamp(create_time) between #{startTime} and #{endTime})                                           as withdraw,
+
+
+               (select ifnull(sum(rewards), 0)
+                from invite_reward_record
+                where  member_id = #{memberId}
+                  and  unix_timestamp(create_time) between #{startTime} and #{endTime})                                           as invite_rewards,
+
+               (select ifnull(sum(points), 0)
+                from member where  id = #{memberId})                          as user_points,
+
+               (select count(*) from (select issue FROM lottery_order
+                                      WHERE  member_id = #{memberId}
+                                          and ( `status` = 1 and create_time BETWEEN from_unixtime(#{startTime})
+                                          AND from_unixtime(#{endTime})) GROUP BY member_id,issue) as a)                                           as lottery_count;
+    </select>
+
+    <select id="statisticWithMemberId2" resultType="com.xingyun.easypaycommon.dao.dto.Statistic2Dto">
+
+        select
+            ifnull(sum(total_points), 0)  as lottery_points,
+            ifnull(sum(obtain_points), 0) as obtain_points
+        from lottery_order where member_id = #{memberId}
+            and unix_timestamp(create_time) between #{startTime} and #{endTime} and `status` =1;
+
+    </select>
+
+</mapper>
